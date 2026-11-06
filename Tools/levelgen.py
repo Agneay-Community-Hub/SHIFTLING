@@ -1,0 +1,178 @@
+"""Level generator for SHIFTLING.
+
+Levels are described with simple rectangle-fill commands and exported as
+ASCII grids into Assets/Scripts/LevelData.cs.  Run:  python Tools/levelgen.py
+
+Legend
+  #  solid ground          S  spikes (kill all but Boulder)
+  W  water                 L  lava (only Ember survives / swims)
+  C  cracked floor         B  wooden barrier (Ember burns it)
+  X  crate (Boulder push)  P  pressure plate (crate or Boulder)
+  D  door (open while any plate is pressed)
+  F  fan (wind blows upward)
+  K  checkpoint            O  exit portal       @  player start
+  f/b/v/e  shrines: Frog, Boulder, Bat (v = vespertilio), Ember
+"""
+import os
+
+LEVELS = []
+
+
+class L:
+    def __init__(self, name, hint, w, h, floor_top):
+        self.name, self.hint, self.w, self.h = name, hint, w, h
+        self.g = [['.' for _ in range(w)] for _ in range(h)]
+        for r in range(h):
+            for x in range(w):
+                if r == 0 or r == h - 1 or x == 0 or x == w - 1 or r >= floor_top:
+                    self.g[r][x] = '#'
+
+    def rect(self, x0, x1, r0, r1, ch):
+        for r in range(r0, r1 + 1):
+            for x in range(x0, x1 + 1):
+                self.g[r][x] = ch
+        return self
+
+    def put(self, x, r, ch):
+        self.g[r][x] = ch
+        return self
+
+    def rows(self):
+        return [''.join(row) for row in self.g]
+
+
+# ---------------------------------------------------------------- Level 1
+l = L("Awakening",
+      "Move: A/D or Arrows  -  Jump: SPACE  -  Jump again in mid-air to double jump",
+      64, 12, 10)
+l.put(2, 9, '@')
+l.rect(11, 16, 8, 9, '#')
+l.rect(17, 22, 9, 9, 'S')
+l.rect(23, 28, 8, 9, '#').put(25, 7, 'K')
+l.rect(29, 34, 5, 9, '#')
+l.put(37, 9, 'f')
+l.rect(41, 42, 8, 9, '#')
+l.rect(43, 43, 6, 9, '#')
+l.rect(44, 55, 6, 10, 'W')
+l.rect(50, 50, 1, 8, '#')
+l.rect(56, 62, 6, 10, '#').put(60, 5, 'O')
+LEVELS.append(l)
+
+# ---------------------------------------------------------------- Level 2
+l = L("Heavy Heart",
+      "Boulders shrug off spikes and crack weak floors - but they cannot jump",
+      70, 17, 11)
+l.put(2, 10, '@').put(9, 10, 'b')
+l.rect(13, 30, 10, 10, 'S')
+l.put(33, 10, 'K')
+l.rect(37, 64, 12, 14, '.')          # tunnel
+l.rect(37, 42, 11, 11, 'C')          # cracked floor into tunnel
+l.rect(43, 46, 1, 10, '#')           # wall blocks the surface route
+l.put(45, 14, 'X')                   # crate
+l.put(51, 15, 'P')                   # plate in a 1-deep hole
+l.rect(57, 58, 12, 14, 'D')          # door
+l.rect(60, 64, 11, 11, '.')          # opening back to the surface
+l.rect(60, 60, 13, 14, '#')          # step
+l.put(67, 10, 'O')
+LEVELS.append(l)
+
+# ---------------------------------------------------------------- Level 3
+l = L("Night Wings",
+      "Bats fly while you hold JUMP - until they tire. Fans fling light things!",
+      44, 22, 20)
+l.put(2, 19, '@').put(5, 19, 'v')
+l.rect(8, 9, 7, 19, '#')
+l.rect(10, 24, 13, 19, 'W')
+l.rect(16, 17, 9, 19, '#').put(16, 8, 'K')
+l.rect(25, 29, 13, 19, '#')
+l.rect(30, 34, 14, 19, '#')
+l.rect(30, 34, 13, 13, 'F')
+l.rect(29, 29, 1, 10, '#')
+l.rect(35, 35, 7, 19, '#')
+l.rect(36, 42, 7, 19, '#')
+l.rect(35, 42, 1, 3, '#')
+l.rect(30, 34, 1, 1, '#')
+l.rect(30, 34, 2, 2, 'S')
+l.put(40, 6, 'O')
+LEVELS.append(l)
+
+# ---------------------------------------------------------------- Level 4
+l = L("Ember Road",
+      "Embers swim through lava and burn wood. Water snuffs them out.",
+      76, 16, 12)
+l.put(2, 11, '@').put(5, 11, 'e')
+l.rect(7, 9, 1, 6, '#').rect(8, 8, 7, 11, 'B')
+l.rect(10, 33, 1, 7, '#')
+l.rect(11, 32, 12, 13, 'L')
+l.put(36, 11, 'K')
+l.rect(41, 58, 12, 13, 'W')
+l.rect(49, 50, 1, 12, '#')
+l.put(61, 11, 'K')
+l.rect(63, 65, 1, 6, '#').rect(64, 64, 7, 11, 'B')
+l.put(72, 11, 'O')
+LEVELS.append(l)
+
+# ---------------------------------------------------------------- Level 5
+l = L("The Grand Shift",
+      "Every shape has a price. Shift wisely.",
+      118, 24, 17)
+l.put(2, 16, '@')
+l.rect(6, 26, 1, 13, '#')
+l.rect(7, 24, 16, 16, 'S')
+l.put(29, 16, 'K')
+l.rect(35, 61, 18, 20, '.')
+l.rect(35, 38, 17, 17, 'C')
+l.rect(39, 42, 1, 16, '#')
+l.put(41, 20, 'X')
+l.put(48, 21, 'P')
+l.rect(54, 55, 18, 20, 'D')
+l.rect(57, 61, 17, 17, '.')
+l.rect(57, 57, 19, 20, '#')
+l.put(64, 16, 'K')
+l.rect(65, 86, 1, 13, '#')
+l.rect(66, 85, 17, 18, 'L')
+l.rect(87, 89, 1, 13, '#').rect(88, 88, 14, 16, 'B')
+l.put(91, 16, 'K')
+l.rect(93, 104, 17, 18, 'W')
+l.rect(98, 99, 1, 17, '#')
+l.put(106, 16, 'K')
+l.rect(109, 113, 17, 17, 'F')
+l.rect(108, 108, 1, 14, '#')
+l.rect(114, 114, 11, 16, '#')
+l.rect(115, 116, 11, 22, '#')
+l.rect(109, 113, 1, 4, '#')
+l.rect(109, 113, 5, 5, 'S')
+l.rect(114, 116, 1, 7, '#')
+l.put(116, 10, 'O')
+LEVELS.append(l)
+
+
+def main():
+    here = os.path.dirname(os.path.abspath(__file__))
+    out = os.path.join(here, '..', 'Assets', 'Scripts', 'LevelData.cs')
+    lines = ["// AUTO-GENERATED by Tools/levelgen.py - edit that file instead.",
+             "namespace Shiftling", "{", "    public static class LevelData", "    {",
+             "        public static readonly string[] Names = {"]
+    lines += ['            "%s",' % lv.name for lv in LEVELS]
+    lines += ["        };", "        public static readonly string[] Hints = {"]
+    lines += ['            "%s",' % lv.hint for lv in LEVELS]
+    lines += ["        };", "        public static readonly string[][] Maps = {"]
+    for lv in LEVELS:
+        lines.append("            new[] {")
+        lines += ['                "%s",' % row for row in lv.rows()]
+        lines.append("            },")
+    lines += ["        };", "    }", "}", ""]
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, 'w', newline='\n') as fh:
+        fh.write('\n'.join(lines))
+    for i, lv in enumerate(LEVELS):
+        print("Level %d: %s (%dx%d)" % (i + 1, lv.name, lv.w, lv.h))
+        print('     ' + ''.join(str(x // 10) for x in range(lv.w)))
+        print('     ' + ''.join(str(x % 10) for x in range(lv.w)))
+        for r, row in enumerate(lv.rows()):
+            print('%3d  %s' % (r, row))
+    print("wrote", os.path.normpath(out))
+
+
+if __name__ == '__main__':
+    main()
