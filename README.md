@@ -4,6 +4,16 @@
 
 Made for **[GitHub Game Off 2026](https://itch.io/jam/game-off-2026)**. The theme is **SHIFT**.
 
+## Trailer
+
+[![SHIFTLING trailer preview — click to watch the full trailer](Docs/trailer-preview.gif)](Trailer/Shiftling-Trailer.mp4)
+
+▶ **[Watch the full trailer (59 s, with sound)](Trailer/Shiftling-Trailer.mp4)**
+
+## Download
+
+**[⬇ Download for Windows (latest release)](https://github.com/Agneay-Community-Hub/SHIFTLING/releases/latest)**: unzip the file and run `Shiftling.exe`.
+
 You are a Wisp, a small spirit that can copy any shape it touches at an old shrine. Each shape solves one problem and brings a new danger. A Boulder walks over spikes but sinks in water. An Ember swims through lava but goes out in a puddle. You get through the levels by changing shape at the right moment. The key that does the swap is **SHIFT**.
 
 ## The shapes
@@ -82,7 +92,7 @@ python Tools/levelgen.py
 unity test --mode PlayMode --output Logs/test-results.xml
 ```
 
-## Trailer
+## Recording the trailer
 
 `Trailer/Shiftling-Trailer.mp4` is a 59-second 1280×720 trailer, recorded from the real game. Running the player with `-trailer <dir>` (see `Assets/Scripts/Trailer.cs`) plays scripted shots with simulated input. It writes every frame at a locked 30 fps and rebuilds the soundtrack (music plus every sound effect, in sync) as a WAV file. To re-record it:
 

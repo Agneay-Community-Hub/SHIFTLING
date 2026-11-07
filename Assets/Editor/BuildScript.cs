@@ -42,6 +42,7 @@ public static class BuildScript
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         PlayerSettings.WebGL.decompressionFallback = true;
         PlayerSettings.WebGL.dataCaching = true;
+        PlayerSettings.WebGL.template = "PROJECT:Shiftling";   // Assets/WebGLTemplates/Shiftling - fills the iframe
         Build(BuildTarget.WebGL, OutputPath("Builds/WebGL"));
     }
 
